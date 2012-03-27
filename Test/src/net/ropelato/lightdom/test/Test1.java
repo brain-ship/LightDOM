@@ -1,11 +1,12 @@
 package net.ropelato.lightdom.test;
 
-import net.ropelato.lightdom.XMLDocument;
+import net.ropelato.lightdom.Document;
 
 public class Test1
 {
 	public static void main(String[] args)
 	{
-		XMLDocument doc = new XMLDocument("Test/TestFiles/books.xml");
+		Document doc = Document.fromFile("Test/TestFiles/books.xml");
+		doc.toFile("Test/TestFiles/books.out.xml");
 	}
 }
