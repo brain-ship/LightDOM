@@ -49,7 +49,10 @@ public class Element implements Node
 
 	public String getAttribute(String name)
 	{
-		return attributes.get(name);
+		if("id".equalsIgnoreCase(name))
+			return getId();
+		else
+			return attributes.get(name);
 	}
 
 	public Element getElementByName(String name)
