@@ -1,1 +1,3 @@
 Test/TestFiles/*.out.xml
+out/production
+out/test
