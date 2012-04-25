@@ -98,6 +98,17 @@ public class Element implements Node
 		return elementsById.get(name);
 	}
 
+	public List<Element> getElements()
+	{
+		List<Element> childElements = new ArrayList<Element>();
+		for(Node child : children)
+		{
+			if(child instanceof Element)
+				childElements.add((Element)child);
+		}
+		return childElements;
+	}
+
 	public List<Node> getChildren()
 	{
 		return children;
