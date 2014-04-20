@@ -1,3 +1,7 @@
+.DS_Store
+Thumbs.db
+._*
+*.iws
 TestFiles/*.out.xml
 out/production
 out/test
