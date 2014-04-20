@@ -1,13 +1,18 @@
-package net.ropelato.lightdom.test;
+package net.ropelato.lightdom;
 
-import net.ropelato.lightdom.Document;
-import net.ropelato.lightdom.Element;
-import net.ropelato.lightdom.TextNode;
+import org.junit.Test;
 
-public class Test2
+public class DocumentTest
 {
+	@org.junit.Test
+	public void testFromFile() throws Exception
+	{
+		Document doc = Document.fromFile("TestFiles/books.xml");
+		doc.toFile("TestFiles/books.out.xml");
+	}
 
-	public static void main(String[] args)
+	@Test
+	public void testToFile() throws Exception
 	{
 		// create document
 
@@ -93,6 +98,6 @@ public class Test2
 
 		// write to file
 
-		doc2.toFile("Test/TestFiles/currencies.out.xml");
+		doc2.toFile("TestFiles/currencies.out.xml");
 	}
 }

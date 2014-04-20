@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<currencies>
+	<currency id="ccy1">
+		<name>Swiss Franc</name>
+		<shortForm>CHF</shortForm>
+		<conversion EUR="0.83" USD="1.10" GBP="0.69"/>
+	</currency>
+	<currency id="ccy2">
+		<name>Euro</name>
+		<shortForm>EUR (€)</shortForm>
+		<conversion EUR="1.00" USD="1.33" GBP="0.84"/>
+	</currency>
+	<currency id="ccy3">
+		<name>US Dollar</name>
+		<shortForm>USD ($)</shortForm>
+		<conversion EUR="0.75" USD="1.00" GBP="0.63"/>
+	</currency>
+	<currency id="ccy4">
+		<name>Great Britain Pound</name>
+		<shortForm>GBP (£)</shortForm>
+		<conversion EUR="1.20" USD="1.59" GBP="1.00"/>
+	</currency>
+</currencies>
