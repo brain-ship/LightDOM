@@ -1,35 +1,34 @@
 package net.ropelato.lightdom;
 
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.io.FileInputStream;
+import java.nio.charset.StandardCharsets;
 
 public class DocumentTest
 {
-	@org.junit.Test
+	@Test
 	public void testFromFile() throws Exception
 	{
+		// load document (UTF-8)
 		Document doc = Document.fromFile("TestFiles/books.xml");
 
-		for(Element bookElement : doc.getRootElement().getElementsByName("book"))
-		{
-			String id = bookElement.getId();
-			String author = bookElement.getElementByName("author").getText();
-			String title = bookElement.getElementByName("title").getText();
-			String genre = bookElement.getElementByName("genre").getText();
-			String price = bookElement.getElementByName("price").getText();
-			String publishDate = bookElement.getElementByName("publish_date").getText();
-			String description = bookElement.getElementByName("description").getText();
+		// change encoding to ISO-8859-1
+		doc.setEncoding(StandardCharsets.ISO_8859_1);
 
-			System.out.println("id: " + id);
-			System.out.println("author: " + author);
-			System.out.println("title: " + title);
-			System.out.println("genre: " + genre);
-			System.out.println("price: " + price);
-			System.out.println("publishDate: " + publishDate);
-			System.out.println("description: " + description);
-			System.out.println("");
-		}
-
+		// save document
 		doc.toFile("TestFiles/books.out.xml");
+
+		// load new document (ISO-8859-1)
+		Document doc2 = Document.fromFile("TestFiles/books.out.xml");
+
+		// change encoding back to UTF-8
+		doc.setEncoding(StandardCharsets.UTF_8);
+		doc2.setEncoding(StandardCharsets.UTF_8);
+
+		// documents should be equal
+		Assert.assertEquals(doc, doc2);
 	}
 
 	@Test
@@ -37,9 +36,9 @@ public class DocumentTest
 	{
 		// create document
 
-		Document doc2 = new Document();
+		Document doc = new Document();
 		Element rootElement = new Element("currencies");
-		doc2.setRootElement(rootElement);
+		doc.setRootElement(rootElement);
 
 		// CHF
 
@@ -98,7 +97,7 @@ public class DocumentTest
 		usdConversion.setAttribute("GBP", "0.63");
 		usdElement.appendChild(usdConversion);
 
-		// USD
+		// GBP
 
 		Element gbpElement = new Element("currency", "ccy4");
 		rootElement.appendChild(gbpElement);
@@ -119,6 +118,17 @@ public class DocumentTest
 
 		// write to file
 
-		doc2.toFile("TestFiles/currencies.out.xml");
+		doc.toFile("TestFiles/currencies.out.xml");
+
+		// load file
+
+		Document doc2 = Document.fromFile("TestFiles/currencies.out.xml");
+
+		// verify values
+
+		Assert.assertEquals("0.83", doc2.getRootElement().getElementById("ccy1").getElementByName("conversion").getAttribute("EUR"));
+		Assert.assertEquals("1.00", doc2.getRootElement().getElementById("ccy2").getElementByName("conversion").getAttribute("EUR"));
+		Assert.assertEquals("0.75", doc2.getRootElement().getElementById("ccy3").getElementByName("conversion").getAttribute("EUR"));
+		Assert.assertEquals("1.20", doc2.getRootElement().getElementById("ccy4").getElementByName("conversion").getAttribute("EUR"));
 	}
 }

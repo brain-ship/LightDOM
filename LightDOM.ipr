@@ -7,6 +7,18 @@
         <element id="module-output" name="LightDOM" />
       </root>
     </artifact>
+    <artifact type="jar" build-on-make="true" name="LightDOM_src">
+      <output-path>$PROJECT_DIR$/out/artifacts</output-path>
+      <root id="archive" name="LightDOM_src.jar">
+        <element id="dir-copy" path="$PROJECT_DIR$/src/main" />
+      </root>
+    </artifact>
+    <artifact type="jar" build-on-make="true" name="LightDOM_javadoc">
+      <output-path>$PROJECT_DIR$/out/artifacts</output-path>
+      <root id="archive" name="LightDOM_javadoc.jar">
+        <element id="dir-copy" path="$PROJECT_DIR$/doc" />
+      </root>
+    </artifact>
   </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
@@ -28,8 +40,17 @@
         <processorPath useClasspath="true" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="1.5" />
   </component>
-  <component name="CopyrightManager" default="" />
+  <component name="CopyrightManager" default="">
+    <copyright>
+      <option name="notice" value="Copyright &amp;#36;today.year, Sandro Ropelato" />
+      <option name="keyword" value="Copyright" />
+      <option name="allowReplaceKeyword" value="" />
+      <option name="myName" value="Sandro Ropelato" />
+      <option name="myLocal" value="true" />
+    </copyright>
+  </component>
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
@@ -54,7 +75,7 @@
     <version value="1.0" />
   </component>
   <component name="JavadocGenerationManager">
-    <option name="OUTPUT_DIRECTORY" />
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/doc" />
     <option name="OPTION_SCOPE" value="protected" />
     <option name="OPTION_HIERARCHY" value="true" />
     <option name="OPTION_NAVIGATOR" value="true" />
@@ -65,10 +86,11 @@
     <option name="OPTION_DOCUMENT_TAG_VERSION" value="false" />
     <option name="OPTION_DOCUMENT_TAG_DEPRECATED" value="true" />
     <option name="OPTION_DEPRECATED_LIST" value="true" />
-    <option name="OTHER_OPTIONS" value="" />
+    <option name="OTHER_OPTIONS" />
     <option name="HEAP_SIZE" />
     <option name="LOCALE" />
-    <option name="OPEN_IN_BROWSER" value="true" />
+    <option name="OPEN_IN_BROWSER" value="false" />
+    <option name="OPTION_INCLUDE_LIBS" value="false" />
   </component>
   <component name="Palette2">
     <group name="Swing">
@@ -202,7 +224,7 @@
   <component name="ProjectResources">
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="VcsDirectoryMappings">

@@ -5,3 +5,4 @@ Thumbs.db
 TestFiles/*.out.xml
 out/production
 out/test
+doc

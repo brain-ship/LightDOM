@@ -5,8 +5,9 @@
 		<title>XML Developer's Guide</title>
 		<genre>Computer</genre>
 		<price>44.95</price>
+		<price>31.95</price>
 		<publish_date>2000-10-01</publish_date>
-		<description>An in-depth look <b>at</b> creating applications with XML.</description>
+		<description>An in-depth look <b>at</b> creating applications with XML. äöü$@*#~</description>
 	</book>
 	<book id="bk101">
 		<author>Ralls, Kim</author>

@@ -6,18 +6,36 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * This class is used to generate a new DOM document. It can be created using the default constructor or loaded from a file or an InputStream. An existing document can by saved to a file or to an OutputStream.
+ *
+ * @author Sandro Ropelato
+ * @since 1.0
+ */
 public class Document extends DefaultHandler
 {
+	private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
+	private static final String DEFAULT_VERSION = "1.0";
+
 	private final Stack<Element> openElements = new Stack<Element>();
 	private Element rootElement = null;
 	private TextNode openTextNode = null;
-	private String encoding = "UTF-8";
-	private String version = "1.0";
 
+	private Charset encoding = DEFAULT_ENCODING;
+	private String version = DEFAULT_VERSION;
+
+	/**
+	 * Creates a new Document from an InputStream.
+	 *
+	 * @param inputStream input stream from which the document should be loaded
+	 * @return document represented by the data form the input stream
+	 */
 	public static Document fromInputStream(InputStream inputStream)
 	{
 		Document doc = new Document();
@@ -25,6 +43,12 @@ public class Document extends DefaultHandler
 		return doc;
 	}
 
+	/**
+	 * Creates a new document from a file.
+	 *
+	 * @param file file from which the document should be loaded
+	 * @return document represented by the content of the file
+	 */
 	public static Document fromFile(File file)
 	{
 		Document doc = new Document();
@@ -53,26 +77,42 @@ public class Document extends DefaultHandler
 		return doc;
 	}
 
+	/**
+	 * Creates a new document from a file. This method is wrapper for the {@link #fromFile(java.io.File)} method.
+	 *
+	 * @param fileName absolute or relative path to the file to be loaded
+	 * @return document represented by the content of the file
+	 */
 	public static Document fromFile(String fileName)
 	{
 		return fromFile(new File(fileName));
 	}
 
-	public Document()
-	{
-
-	}
-
+	/**
+	 * Sets the root element of this document. Setting a new root element will replace the old one as there can be only one root element.
+	 *
+	 * @param rootElement root element of the document
+	 */
 	public void setRootElement(Element rootElement)
 	{
 		this.rootElement = rootElement;
 	}
 
+	/**
+	 * Returns the root element of this document.
+	 *
+	 * @return root element of the document
+	 */
 	public Element getRootElement()
 	{
 		return rootElement;
 	}
 
+	/**
+	 * Parses input stream and builds document.
+	 *
+	 * @param inputStream input stream from which the document should be loaded
+	 */
 	private void parse(InputStream inputStream)
 	{
 		try
@@ -88,6 +128,12 @@ public class Document extends DefaultHandler
 		}
 	}
 
+
+	/**
+	 * Writes XML document to an output stream.
+	 *
+	 * @param outputStream output stream to which the XML document should be written
+	 */
 	public void toOutputStream(OutputStream outputStream)
 	{
 		if(rootElement == null)
@@ -96,8 +142,8 @@ public class Document extends DefaultHandler
 		OutputStreamWriter writer = null;
 		try
 		{
-			writer = new OutputStreamWriter(outputStream, "UTF-8");
-			writer.write("<?xml version=\"" + version + "\" encoding=\"" + encoding + "\"?>");
+			writer = new OutputStreamWriter(outputStream, encoding);
+			writer.write("<?xml version=\"" + version + "\" encoding=\"" + encoding.displayName() + "\"?>");
 			rootElement.write(writer, 0, true);
 			writer.close();
 		}
@@ -119,6 +165,11 @@ public class Document extends DefaultHandler
 		}
 	}
 
+	/**
+	 * Writes XML document to a file.
+	 *
+	 * @param file file to which the XML document should be written
+	 */
 	public void toFile(File file)
 	{
 		FileOutputStream fileOutputStream = null;
@@ -145,9 +196,64 @@ public class Document extends DefaultHandler
 		}
 	}
 
-	public void toFile(String fileName)
+	/**
+	 * Writes XML document to a file. This method is wrapper for the {@link #toFile(java.io.File)} method.
+	 *
+	 * @param filename
+	 */
+	public void toFile(String filename)
 	{
-		toFile(new File(fileName));
+		toFile(new File(filename));
+	}
+
+	/**
+	 * Returns the encoding of the document.
+	 *
+	 * @return encoding of the document
+	 */
+	public Charset getEncoding()
+	{
+		return encoding;
+	}
+
+	/**
+	 * Sets the encoding of the document.
+	 *
+	 * @param charset encoding charset of the document.
+	 */
+	public void setEncoding(Charset charset)
+	{
+		this.encoding = charset;
+	}
+
+	/**
+	 * Sets the encoding of the document. This method is wrapper for the {@link #setEncoding(java.nio.charset.Charset)} method.
+	 *
+	 * @param charsetName name of the encoding charset of the document.
+	 */
+	public void setEncoding(String charsetName)
+	{
+		setEncoding(Charset.forName(charsetName));
+	}
+
+	/**
+	 * Returns the XML version of the document.
+	 *
+	 * @return XML version of the document.
+	 */
+	public String getVersion()
+	{
+		return version;
+	}
+
+	/**
+	 * Sets the XML version of the document.
+	 *
+	 * @param version XML version of the document
+	 */
+	public void setVersion(String version)
+	{
+		this.version = version;
 	}
 
 	@Override
@@ -155,14 +261,13 @@ public class Document extends DefaultHandler
 	{
 		if(locator instanceof Locator2)
 		{
-			encoding = ((Locator2)locator).getEncoding();
+			encoding = Charset.forName(((Locator2)locator).getEncoding());
 			version = ((Locator2)locator).getXMLVersion();
 		}
 	}
 
 	@Override
-	public void startElement(String uri, String localName, String qName, Attributes atts)
-			throws SAXException
+	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
 	{
 		if(openTextNode != null)
 			openElements.peek().appendChild(openTextNode);
@@ -210,8 +315,7 @@ public class Document extends DefaultHandler
 	}
 
 	@Override
-	public void characters(char[] ch, int start, int length)
-			throws SAXException
+	public void characters(char[] ch, int start, int length) throws SAXException
 	{
 		String textAsString = new String(ch, start, length);
 
@@ -225,5 +329,28 @@ public class Document extends DefaultHandler
 				openTextNode = new TextNode();
 			openTextNode.appendText(textAsString);
 		}
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this == o) return true;
+		if(o == null) return false;
+		if(!(o instanceof Document)) return false;
+
+		Document document = (Document)o;
+
+		// compare encoding
+		if((encoding == null && document.getEncoding() != null) || (encoding != null && !encoding.equals(document.getEncoding())))
+			return false;
+
+		// compare version
+		if((version == null && document.getVersion() != null) || (version != null && !version.equals(document.getVersion())))
+			return false;
+
+		if((rootElement == null && document.getRootElement() != null) || (rootElement != null && !rootElement.equals(document.getRootElement())))
+			return false;
+
+		return true;
 	}
 }
