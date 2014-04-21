@@ -18,6 +18,7 @@ public class Element implements Node
 	private Element parent;
 	private final Map<String, String> attributes = new HashMap<String, String>();
 	private final List<Node> children = new ArrayList<Node>();
+	private final List<TextNode> textNodes = new ArrayList<TextNode>();
 	private final Map<String, List<Element>> elementsByName = new HashMap<String, List<Element>>();
 	private final Map<String, Element> elementsById = new HashMap<String, Element>();
 
@@ -53,6 +54,28 @@ public class Element implements Node
 			return getId();
 		else
 			return attributes.get(name);
+	}
+
+	public String getText()
+	{
+		if(textNodes.isEmpty())
+			return null;
+
+		String text = "";
+		for(Node node : children)
+		{
+			if(node instanceof TextNode)
+			{
+				text += ((TextNode)node).getText();
+			}
+			else if(node instanceof Element)
+			{
+				String tmpText = ((Element)node).getText();
+				if(tmpText != null)
+					text += tmpText;
+			}
+		}
+		return text;
 	}
 
 	public Element getElementByName(String name)
@@ -112,6 +135,11 @@ public class Element implements Node
 	public List<Node> getChildren()
 	{
 		return children;
+	}
+
+	public List<TextNode> getTextNodes()
+	{
+		return textNodes;
 	}
 
 	public void setParent(Element parent)
@@ -174,6 +202,11 @@ public class Element implements Node
 				elementsById.put(element.getId(), element);
 			}
 		}
+
+		if(node instanceof TextNode)
+		{
+			textNodes.add((TextNode)node);
+		}
 	}
 
 	public void removeChild(Node node)
@@ -195,6 +228,11 @@ public class Element implements Node
 
 			if(element.getId() != null)
 				elementsById.remove(element.getId());
+		}
+
+		if(node instanceof TextNode)
+		{
+			textNodes.remove(node);
 		}
 	}
 

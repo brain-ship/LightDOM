@@ -8,6 +8,27 @@ public class DocumentTest
 	public void testFromFile() throws Exception
 	{
 		Document doc = Document.fromFile("TestFiles/books.xml");
+
+		for(Element bookElement : doc.getRootElement().getElementsByName("book"))
+		{
+			String id = bookElement.getId();
+			String author = bookElement.getElementByName("author").getText();
+			String title = bookElement.getElementByName("title").getText();
+			String genre = bookElement.getElementByName("genre").getText();
+			String price = bookElement.getElementByName("price").getText();
+			String publishDate = bookElement.getElementByName("publish_date").getText();
+			String description = bookElement.getElementByName("description").getText();
+
+			System.out.println("id: " + id);
+			System.out.println("author: " + author);
+			System.out.println("title: " + title);
+			System.out.println("genre: " + genre);
+			System.out.println("price: " + price);
+			System.out.println("publishDate: " + publishDate);
+			System.out.println("description: " + description);
+			System.out.println("");
+		}
+
 		doc.toFile("TestFiles/books.out.xml");
 	}
 
