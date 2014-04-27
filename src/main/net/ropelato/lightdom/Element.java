@@ -1,8 +1,14 @@
 package net.ropelato.lightdom;
 
+import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
+import javax.xml.namespace.QName;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -16,11 +22,12 @@ import java.util.logging.Logger;
  * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
  *
  * @author Sandro Ropelato
- * @version 1.1.1
+ * @version 1.1.2
  */
 public class Element implements Node
 {
 	private static final Logger logger = Logger.getLogger(Element.class.getName());
+	private static final String INDEX_NAME = "lightdom-element-index";
 
 	private final String name;
 	private String id;
@@ -65,6 +72,7 @@ public class Element implements Node
 		this.id = id;
 		if(attributes != null && !attributes.isEmpty())
 			this.attributes.putAll(attributes);
+		setIndex("-1");
 	}
 
 	/**
@@ -112,24 +120,46 @@ public class Element implements Node
 	 *
 	 * @param document document in which the new node will be created
 	 * @return instance of org.w3c.dom.Node
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document)
 	{
+		return toW3CNode(document, false);
+	}
+
+	/**
+	 * Converts node to an instance of org.w3c.dom.Node in the context of the given document.
+	 *
+	 * @param document  document in which the new node will be created
+	 * @param keepIndex {@code true} if the index attribute (lightdom specific) should be kept, {@code false} otherwise
+	 * @return instance of org.w3c.dom.Node
+	 * @since 1.1.2
+	 */
+	protected org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document, boolean keepIndex)
+	{
 		org.w3c.dom.Element element = document.createElement(name);
 
-		// append attributes
-		for(Map.Entry<String, String> attributeEntry : attributes.entrySet())
+		// set id (if available)
+		if(getId() != null)
 		{
-			element.setAttribute(attributeEntry.getKey(), attributeEntry.getValue());
-			if("id".equalsIgnoreCase(attributeEntry.getKey()))
-				element.setIdAttribute(attributeEntry.getKey(), true);
+			element.setAttribute("id", getId());
+			element.setIdAttribute("id", true);
+		}
+
+		// append attributes
+		for(Map.Entry<String, String> attributeEntry : getAttributes().entrySet())
+		{
+			if(keepIndex || !INDEX_NAME.equals(attributeEntry.getKey()))
+				element.setAttribute(attributeEntry.getKey(), attributeEntry.getValue());
 		}
 
 		// append children
 		for(Node childNode : getChildren())
 		{
-			element.appendChild(childNode.toW3CNode(document));
+			if(childNode instanceof Element)
+				element.appendChild(((Element)childNode).toW3CNode(document, keepIndex));
+			else
+				element.appendChild((childNode).toW3CNode(document));
 		}
 
 		return element;
@@ -477,6 +507,100 @@ public class Element implements Node
 	}
 
 	/**
+	 * Retrieves element by Xpath query. This uses the built in XML library for Xpath processing and can be slow.
+	 *
+	 * @param query Xpath query to search for elements
+	 * @return first element matching the query or {@code null} if none match.
+	 * @since 1.1.2
+	 */
+	public Element getElementByQuery(String query)
+	{
+		List<Element> elementList = getElementsByQuery(query);
+		if(elementList.size() == 0)
+			return null;
+		else
+			return elementList.get(0);
+	}
+
+	/**
+	 * Retrieves elements by Xpath query. This uses the built in XML library for Xpath processing and can be slow.
+	 *
+	 * @param query Xpath query to search for elements
+	 * @return a list containing all elements matching the query
+	 * @since 1.1.2
+	 */
+	public List<Element> getElementsByQuery(String query)
+	{
+		try
+		{
+			List<Element> elementList = new ArrayList<Element>();
+
+			Object result = processXPath(this.toW3CNode(new Document().toW3CDocument(), true), query, XPathConstants.NODESET);
+			if(result != null && result instanceof DTMNodeList)
+			{
+				DTMNodeList dtmNodeList = (DTMNodeList)result;
+				for(int i = 0; i < dtmNodeList.getLength(); i++)
+				{
+					if(dtmNodeList.item(i) != null && dtmNodeList.item(i) instanceof org.w3c.dom.Element)
+					{
+						Element element = Element.fromW3CNode(dtmNodeList.item(i));
+
+						// find corresponding element relative to this by traversing the DOM tree by child index
+						String index = element.getIndex();
+						String[] indices = index.split(",");
+
+						Element tmpElement = this;
+						for(int j = 1; j < indices.length; j++)
+						{
+							int childIndex = new Integer(indices[j]);
+							tmpElement = (Element)tmpElement.getChildren().get(childIndex);
+						}
+
+						// add element to list
+						elementList.add(tmpElement);
+					}
+				}
+			}
+
+			return elementList;
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Returns this element's index.
+	 *
+	 * @return this element's index
+	 * @see #setIndex(String)
+	 * @since 1.1.2
+	 */
+	protected String getIndex()
+	{
+		return getAttribute(INDEX_NAME);
+	}
+
+	/**
+	 * Updates index of this element and all children. The index is a string of comma-separated integers, identifying which number each element has in the children list of its parent. A -1 means that this element has no parent. For example, {@code "-1,3,0,2"} identifies the 3rd element of the 1st element of the 4th element of the root element.
+	 *
+	 * @param index index for this element
+	 * @since 1.1.2
+	 */
+	private void setIndex(String index)
+	{
+		setAttribute(INDEX_NAME, index);
+		int i = 0;
+		for(Node child : children)
+		{
+			if(child instanceof Element)
+				((Element)child).setIndex(index + "," + i);
+			i++;
+		}
+	}
+
+	/**
 	 * Returns the element with the corresponding id.
 	 *
 	 * @param id id of the element
@@ -521,6 +645,8 @@ public class Element implements Node
 	public void setParent(Element parent)
 	{
 		this.parent = parent;
+		if(parent == null)
+			setIndex("-1");
 	}
 
 	/**
@@ -602,6 +728,9 @@ public class Element implements Node
 
 				elementsById.put(element.getId(), element);
 			}
+
+			// update index
+			element.setIndex(getIndex() + "," + (children.size() - 1));
 		}
 
 		if(node instanceof TextNode)
@@ -617,8 +746,27 @@ public class Element implements Node
 	 */
 	public void removeChild(Node node)
 	{
+		// get child index
+		int formerChildIndex = -1;
+		for(Node childNode : children)
+		{
+			if(childNode == node)
+				break;
+			else
+				formerChildIndex++;
+		}
+
+		// remove child
 		node.setParent(null);
 		children.remove(node);
+
+		// update index of younger children
+		for(int i = formerChildIndex; i < children.size(); i++)
+		{
+			Node childNode = children.get(i);
+			if(childNode instanceof Element)
+				((Element)childNode).setIndex(getIndex() + "," + i);
+		}
 
 		if(node instanceof Element)
 		{
@@ -661,11 +809,12 @@ public class Element implements Node
 
 		writer.write("<" + name);
 		if(id != null)
-			writer.write(" id=\"" + id + "\"");
+			writer.write(" id=\"" + Document.encodeValueForWriting(id) + "\"");
 
 		for(Map.Entry<String, String> attribute : attributes.entrySet())
 		{
-			writer.write(" " + attribute.getKey() + "=\"" + attribute.getValue() + "\"");
+			if(!INDEX_NAME.equals(attribute.getKey()))
+				writer.write(" " + Document.encodeValueForWriting(attribute.getKey()) + "=\"" + Document.encodeValueForWriting(attribute.getValue()) + "\"");
 		}
 
 		if(!hasChildren())
@@ -739,5 +888,20 @@ public class Element implements Node
 		}
 
 		return true;
+	}
+
+	private static Object processXPath(org.w3c.dom.Node node, String expression, QName returnType)
+	{
+		try
+		{
+			XPath xPath = XPathFactory.newInstance().newXPath();
+			XPathExpression xPathExpression = xPath.compile(expression);
+			return xPathExpression.evaluate(node, returnType);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

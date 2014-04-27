@@ -7,7 +7,7 @@ import java.io.Writer;
  * This interfase defines a node in the DOM tree. A node can either be an element or a text node.
  *
  * @author Sandro Ropelato
- * @version 1.1.1
+ * @version 1.1.2
  */
 public interface Node
 {
@@ -30,7 +30,7 @@ public interface Node
 	 *
 	 * @param document document in which the new node will be created
 	 * @return instance of org.w3c.dom.Node
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document);
 

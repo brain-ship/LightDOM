@@ -18,6 +18,9 @@ Version history
 
 - 1.1.1: Fixed issue where text nodes or attributes would no be copied from a org.w3c.dom.Element object.
 
+- 1.1.2: Added methods to retrieve elements with an Xpath query (See example #3). Properly escaping characters in text nodes and attribute values.
+
+
 Example #1: Load, modify and save XML file:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -90,3 +93,10 @@ rootElement.appendChild(movie3);
 
 doc.toFile("TestFiles/movies.out.xml");
 
+
+Example #3: Find element with Xpath:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Document doc = Document.fromFile("TestFiles/books.xml");
+Element book1Title = doc.getRootElement().getElementByQuery("book[@id = 'bk101' and price > 30]/title");
+Element book2Author = doc.getRootElement().getElementByQuery("book[contains(description, 'battle one another')]/author");

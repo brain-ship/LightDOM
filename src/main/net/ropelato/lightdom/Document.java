@@ -18,7 +18,7 @@ import java.util.Stack;
  * This class is used to generate a new DOM document. It can be created using the default constructor or loaded from a file or an InputStream. An existing document can by saved to a file or to an OutputStream.
  *
  * @author Sandro Ropelato
- * @version 1.1.1
+ * @version 1.1.2
  */
 public class Document extends DefaultHandler
 {
@@ -192,9 +192,21 @@ public class Document extends DefaultHandler
 	 * Converts document to an instance of org.w3c.dom.Document.
 	 *
 	 * @return instance of org.w3c.dom.Document
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public org.w3c.dom.Document toW3CDocument()
+	{
+		return toW3CDocument(false);
+	}
+
+	/**
+	 * Converts document to an instance of org.w3c.dom.Document.
+	 *
+	 * @param keepIndex {@code true} if the index attribute (lightdom specific) should be kept, {@code false} otherwise
+	 * @return instance of org.w3c.dom.Document
+	 * @since 1.1.2
+	 */
+	protected org.w3c.dom.Document toW3CDocument(boolean keepIndex)
 	{
 		try
 		{
@@ -207,7 +219,7 @@ public class Document extends DefaultHandler
 
 			// append root element
 			if(rootElement != null)
-				w3cDocument.appendChild(rootElement.toW3CNode(w3cDocument));
+				w3cDocument.appendChild(rootElement.toW3CNode(w3cDocument, keepIndex));
 
 			return w3cDocument;
 		}
@@ -305,6 +317,24 @@ public class Document extends DefaultHandler
 	public void setVersion(String version)
 	{
 		this.version = version;
+	}
+
+	/**
+	 * Helper method to escape certain characters according to the XML standard.
+	 *
+	 * @param value the value to be encoded
+	 * @return the encoded value
+	 * @since 1.1.2
+	 */
+	protected static String encodeValueForWriting(String value)
+	{
+		value = value.replace("&", "&amp;");
+		value = value.replace("\"", "&quot;");
+		value = value.replace("'", "&apos;");
+		value = value.replace("<", "&lt;");
+		value = value.replace(">", "&gt;");
+
+		return value;
 	}
 
 	@Override

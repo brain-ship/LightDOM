@@ -7,7 +7,7 @@
 		<price>44.95</price>
 		<price>31.95</price>
 		<publish_date>2000-10-01</publish_date>
-		<description>An in-depth look <b>at</b> creating applications with XML. äöü$@*#~</description>
+		<description>An in-depth look <b>at</b> creating applications with XML. &amp;äöü$@*#~</description>
 	</book>
 	<book id="bk101">
 		<author>Ralls, Kim</author>
@@ -20,7 +20,7 @@
 			of the world.
 		</description>
 	</book>
-	<book id="bk103">
+	<book id="&quot;bk103&quot;">
 		<author>Corets, Eva</author>
 		<title>Maeve Ascendant</title>
 		<genre>Fantasy</genre>

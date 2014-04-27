@@ -2,13 +2,12 @@ package net.ropelato.lightdom;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Map;
 
 /**
  * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
  *
  * @author Sandro Ropelato
- * @version 1.1.1
+ * @version 1.1.2
  */
 public class TextNode implements Node
 {
@@ -54,7 +53,7 @@ public class TextNode implements Node
 	 *
 	 * @param document document in which the new node will be created
 	 * @return instance of org.w3c.dom.Node
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document)
 	{
@@ -138,7 +137,7 @@ public class TextNode implements Node
 				writer.write(indentionString);
 			}
 
-			String printText = text;
+			String printText = Document.encodeValueForWriting(text);
 			printText = printText.replaceAll("\n", "\n" + indentionString + "\t");
 			printText = printText.replaceAll("\n" + indentionString + "\t$", "\n" + indentionString);
 			writer.write(printText);
