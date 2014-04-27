@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
  *
  * @author Sandro Ropelato
- * @version 1.1
+ * @version 1.1.1
  */
 public class Element implements Node
 {
@@ -81,6 +81,14 @@ public class Element implements Node
 		// create element
 		Element element = new Element(w3cNode.getNodeName());
 
+		// set attributes
+		NamedNodeMap attributesMap = w3cNode.getAttributes();
+		for(int i = 0; i < attributesMap.getLength(); i++)
+		{
+			org.w3c.dom.Node attributeNode = attributesMap.item(i);
+			element.setAttribute(attributeNode.getNodeName(), attributeNode.getNodeValue());
+		}
+
 		// append child nodes
 		NodeList childNodes = w3cNode.getChildNodes();
 		for(int i = 0; i < childNodes.getLength(); i++)
@@ -89,10 +97,6 @@ public class Element implements Node
 			if(childNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE)
 			{
 				element.appendChild(Element.fromW3CNode(childNode));
-			}
-			else if(childNode.getNodeType() == org.w3c.dom.Node.ATTRIBUTE_NODE)
-			{
-				element.setAttribute(childNode.getNodeName(), childNode.getNodeValue());
 			}
 			else if(childNode.getNodeType() == org.w3c.dom.Node.TEXT_NODE)
 			{

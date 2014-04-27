@@ -8,7 +8,7 @@ import java.util.Map;
  * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
  *
  * @author Sandro Ropelato
- * @version 1.1
+ * @version 1.1.1
  */
 public class TextNode implements Node
 {
@@ -46,7 +46,7 @@ public class TextNode implements Node
 		if(w3cNode.getNodeType() != org.w3c.dom.Node.TEXT_NODE)
 			throw new RuntimeException("Node must be a  text node.");
 
-		return new TextNode(w3cNode.getTextContent());
+		return new TextNode(w3cNode.getNodeValue());
 	}
 
 	/**

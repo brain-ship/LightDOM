@@ -150,7 +150,7 @@ public class DocumentTest
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			org.w3c.dom.Document w3cDocument = builder.parse(new File("TestFiles/books.xml"));
 
-			// write the content into xml file
+			// write content to xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(w3cDocument);
@@ -178,7 +178,7 @@ public class DocumentTest
 			// convert to W3C document
 			org.w3c.dom.Document w3cDocument = doc.toW3CDocument();
 
-			// write the content into xml file
+			// write content to xml file
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMSource source = new DOMSource(w3cDocument);

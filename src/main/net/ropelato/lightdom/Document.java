@@ -18,7 +18,7 @@ import java.util.Stack;
  * This class is used to generate a new DOM document. It can be created using the default constructor or loaded from a file or an InputStream. An existing document can by saved to a file or to an OutputStream.
  *
  * @author Sandro Ropelato
- * @version 1.1
+ * @version 1.1.1
  */
 public class Document extends DefaultHandler
 {
