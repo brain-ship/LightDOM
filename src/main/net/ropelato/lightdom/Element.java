@@ -1,5 +1,8 @@
 package net.ropelato.lightdom;
 
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -62,6 +65,70 @@ public class Element implements Node
 		this.id = id;
 		if(attributes != null && !attributes.isEmpty())
 			this.attributes.putAll(attributes);
+	}
+
+	/**
+	 * Creates element based on an instance of org.w3c.dom.Node. This will throw a RuntimeException if the given node is not an instance of org.w3c.dom.Element.
+	 *
+	 * @return element based on given org.dom.w3c.Node instance
+	 * @since 1.1
+	 */
+	public static Element fromW3CNode(org.w3c.dom.Node w3cNode)
+	{
+		if(w3cNode.getNodeType() != org.w3c.dom.Node.ELEMENT_NODE)
+			throw new RuntimeException("Node must be an element.");
+
+		// create element
+		Element element = new Element(w3cNode.getNodeName());
+
+		// append child nodes
+		NodeList childNodes = w3cNode.getChildNodes();
+		for(int i = 0; i < childNodes.getLength(); i++)
+		{
+			org.w3c.dom.Node childNode = childNodes.item(i);
+			if(childNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE)
+			{
+				element.appendChild(Element.fromW3CNode(childNode));
+			}
+			else if(childNode.getNodeType() == org.w3c.dom.Node.ATTRIBUTE_NODE)
+			{
+				element.setAttribute(childNode.getNodeName(), childNode.getNodeValue());
+			}
+			else if(childNode.getNodeType() == org.w3c.dom.Node.TEXT_NODE)
+			{
+				element.appendChild(TextNode.fromW3CNode(childNode));
+			}
+		}
+
+		return element;
+	}
+
+	/**
+	 * Converts node to an instance of org.w3c.dom.Node in the context of the given document.
+	 *
+	 * @param document document in which the new node will be created
+	 * @return instance of org.w3c.dom.Node
+	 * @since 1.1
+	 */
+	public org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document)
+	{
+		org.w3c.dom.Element element = document.createElement(name);
+
+		// append attributes
+		for(Map.Entry<String, String> attributeEntry : attributes.entrySet())
+		{
+			element.setAttribute(attributeEntry.getKey(), attributeEntry.getValue());
+			if("id".equalsIgnoreCase(attributeEntry.getKey()))
+				element.setIdAttribute(attributeEntry.getKey(), true);
+		}
+
+		// append children
+		for(Node childNode : getChildren())
+		{
+			element.appendChild(childNode.toW3CNode(document));
+		}
+
+		return element;
 	}
 
 	/**

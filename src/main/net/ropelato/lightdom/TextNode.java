@@ -2,6 +2,7 @@ package net.ropelato.lightdom;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 /**
  * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
@@ -32,6 +33,32 @@ public class TextNode implements Node
 	{
 		this();
 		this.text = text;
+	}
+
+	/**
+	 * Creates text node based on an instance of org.w3c.dom.Node. This will throw a RuntimeException if the given node is not an instance of org.w3c.dom.Text.
+	 *
+	 * @return text node based on given org.dom.w3c.Node instance
+	 * @since 1.1
+	 */
+	public static TextNode fromW3CNode(org.w3c.dom.Node w3cNode)
+	{
+		if(w3cNode.getNodeType() != org.w3c.dom.Node.TEXT_NODE)
+			throw new RuntimeException("Node must be a  text node.");
+
+		return new TextNode(w3cNode.getTextContent());
+	}
+
+	/**
+	 * Converts node to an instance of org.w3c.dom.Node in the context of the given document.
+	 *
+	 * @param document document in which the new node will be created
+	 * @return instance of org.w3c.dom.Node
+	 * @since 1.1
+	 */
+	public org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document)
+	{
+		return document.createTextNode(text);
 	}
 
 	/**

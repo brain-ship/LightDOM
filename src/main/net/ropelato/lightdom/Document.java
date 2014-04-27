@@ -5,6 +5,8 @@ import org.xml.sax.ext.Locator2;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +18,7 @@ import java.util.Stack;
  * This class is used to generate a new DOM document. It can be created using the default constructor or loaded from a file or an InputStream. An existing document can by saved to a file or to an OutputStream.
  *
  * @author Sandro Ropelato
+ * @version 1.0
  * @since 1.0
  */
 public class Document extends DefaultHandler
@@ -89,45 +92,25 @@ public class Document extends DefaultHandler
 	}
 
 	/**
-	 * Sets the root element of this document. Setting a new root element will replace the old one as there can be only one root element.
+	 * Builds document based on an instance of org.w3c.dom.Document.
 	 *
-	 * @param rootElement root element of the document
+	 * @return document based on given org.dom.w3c.Document instance
+	 * @since 1.1
 	 */
-	public void setRootElement(Element rootElement)
+	public static Document fromW3CDocument(org.w3c.dom.Document w3cDocument)
 	{
-		this.rootElement = rootElement;
-	}
+		Document doc = new Document();
 
-	/**
-	 * Returns the root element of this document.
-	 *
-	 * @return root element of the document
-	 */
-	public Element getRootElement()
-	{
-		return rootElement;
-	}
+		if(w3cDocument.getXmlEncoding() != null)
+			doc.setEncoding(w3cDocument.getXmlEncoding());
+		if(w3cDocument.getXmlVersion() != null)
+			doc.setVersion(w3cDocument.getXmlVersion());
 
-	/**
-	 * Parses input stream and builds document.
-	 *
-	 * @param inputStream input stream from which the document should be loaded
-	 */
-	private void parse(InputStream inputStream)
-	{
-		try
-		{
-			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-			InputSource inputSource = new InputSource(inputStream);
-			xmlReader.setContentHandler(this);
-			xmlReader.parse(inputSource);
-		}
-		catch(Exception e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
+		if(w3cDocument.getDocumentElement() != null)
+			doc.setRootElement(Element.fromW3CNode(w3cDocument.getDocumentElement()));
 
+		return doc;
+	}
 
 	/**
 	 * Writes XML document to an output stream.
@@ -204,6 +187,75 @@ public class Document extends DefaultHandler
 	public void toFile(String filename)
 	{
 		toFile(new File(filename));
+	}
+
+	/**
+	 * Converts document to an instance of org.w3c.dom.Document.
+	 *
+	 * @return instance of org.w3c.dom.Document
+	 * @since 1.1
+	 */
+	public org.w3c.dom.Document toW3CDocument()
+	{
+		try
+		{
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			org.w3c.dom.Document w3cDocument = docBuilder.newDocument();
+
+			// set version
+			w3cDocument.setXmlVersion(getVersion());
+
+			// append root element
+			if(rootElement != null)
+				w3cDocument.appendChild(rootElement.toW3CNode(w3cDocument));
+
+			return w3cDocument;
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Sets the root element of this document. Setting a new root element will replace the old one as there can be only one root element.
+	 *
+	 * @param rootElement root element of the document
+	 */
+	public void setRootElement(Element rootElement)
+	{
+		this.rootElement = rootElement;
+	}
+
+	/**
+	 * Returns the root element of this document.
+	 *
+	 * @return root element of the document
+	 */
+	public Element getRootElement()
+	{
+		return rootElement;
+	}
+
+	/**
+	 * Parses input stream and builds document.
+	 *
+	 * @param inputStream input stream from which the document should be loaded
+	 */
+	private void parse(InputStream inputStream)
+	{
+		try
+		{
+			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+			InputSource inputSource = new InputSource(inputStream);
+			xmlReader.setContentHandler(this);
+			xmlReader.parse(inputSource);
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**

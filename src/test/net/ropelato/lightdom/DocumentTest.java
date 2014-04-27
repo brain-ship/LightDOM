@@ -3,6 +3,14 @@ package net.ropelato.lightdom;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -130,5 +138,56 @@ public class DocumentTest
 		Assert.assertEquals("1.00", doc2.getRootElement().getElementById("ccy2").getElementByName("conversion").getAttribute("EUR"));
 		Assert.assertEquals("0.75", doc2.getRootElement().getElementById("ccy3").getElementByName("conversion").getAttribute("EUR"));
 		Assert.assertEquals("1.20", doc2.getRootElement().getElementById("ccy4").getElementByName("conversion").getAttribute("EUR"));
+	}
+
+	@Test
+	public void testFromW3CDocument() throws Exception
+	{
+		try
+		{
+			//load dom
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			org.w3c.dom.Document w3cDocument = builder.parse(new File("TestFiles/books.xml"));
+
+			// write the content into xml file
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(w3cDocument);
+			StreamResult result = new StreamResult(new File("TestFiles/books.dom1.out.xml"));
+			transformer.transform(source, result);
+
+			// convert W3C document to document
+			Document doc = Document.fromW3CDocument(w3cDocument);
+			doc.toFile("TestFiles/books.dom2.out.xml");
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Test
+	public void testToW3CDocument() throws Exception
+	{
+		try
+		{
+			//load document
+			Document doc = Document.fromFile("TestFiles/books.xml");
+
+			// convert to W3C document
+			org.w3c.dom.Document w3cDocument = doc.toW3CDocument();
+
+			// write the content into xml file
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(w3cDocument);
+			StreamResult result = new StreamResult(new File("TestFiles/books.dom3.out.xml"));
+			transformer.transform(source, result);
+		}
+		catch(Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 }
