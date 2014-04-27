@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
  *
  * @author Sandro Ropelato
- * @since 1.0
+ * @version 1.1
  */
 public class Element implements Node
 {

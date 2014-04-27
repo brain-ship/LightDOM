@@ -7,15 +7,15 @@
         <element id="module-output" name="LightDOM" />
       </root>
     </artifact>
-    <artifact type="jar" build-on-make="true" name="LightDOM_src">
+    <artifact type="jar" build-on-make="true" name="LightDOM-src">
       <output-path>$PROJECT_DIR$/out/artifacts</output-path>
-      <root id="archive" name="LightDOM_src.jar">
+      <root id="archive" name="LightDOM-src.jar">
         <element id="dir-copy" path="$PROJECT_DIR$/src/main" />
       </root>
     </artifact>
-    <artifact type="jar" build-on-make="true" name="LightDOM_javadoc">
+    <artifact type="jar" build-on-make="true" name="LightDOM-javadoc">
       <output-path>$PROJECT_DIR$/out/artifacts</output-path>
-      <root id="archive" name="LightDOM_javadoc.jar">
+      <root id="archive" name="LightDOM-javadoc.jar">
         <element id="dir-copy" path="$PROJECT_DIR$/doc" />
       </root>
     </artifact>
@@ -81,15 +81,15 @@
     <option name="OPTION_NAVIGATOR" value="true" />
     <option name="OPTION_INDEX" value="true" />
     <option name="OPTION_SEPARATE_INDEX" value="true" />
-    <option name="OPTION_DOCUMENT_TAG_USE" value="false" />
-    <option name="OPTION_DOCUMENT_TAG_AUTHOR" value="false" />
-    <option name="OPTION_DOCUMENT_TAG_VERSION" value="false" />
+    <option name="OPTION_DOCUMENT_TAG_USE" value="true" />
+    <option name="OPTION_DOCUMENT_TAG_AUTHOR" value="true" />
+    <option name="OPTION_DOCUMENT_TAG_VERSION" value="true" />
     <option name="OPTION_DOCUMENT_TAG_DEPRECATED" value="true" />
     <option name="OPTION_DEPRECATED_LIST" value="true" />
     <option name="OTHER_OPTIONS" />
     <option name="HEAP_SIZE" />
     <option name="LOCALE" />
-    <option name="OPEN_IN_BROWSER" value="false" />
+    <option name="OPEN_IN_BROWSER" value="true" />
     <option name="OPTION_INCLUDE_LIBS" value="false" />
   </component>
   <component name="Palette2">

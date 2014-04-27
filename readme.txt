@@ -9,6 +9,14 @@
 LightDOM is a very lightweight java-based DOM library to process XML documents. Have a look at the following examples or at the source code and the test classes to see how LightDOM works. The jar files containing the binaries, source code and javadoc can be found in out/artefacts.
 
 
+Version history
+~~~~~~~~~~~~~~
+
+- 1.0: Initial version.
+
+- 1.1: Added method to convert documents between LightDOM and the build-in DOM classes (org.w3c.dom.*).
+
+
 Example #1: Load, modify and save XML file:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
