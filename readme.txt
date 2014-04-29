@@ -20,6 +20,8 @@ Version history
 
 - 1.1.2: Added methods to retrieve elements with an Xpath query (See example #3). Properly escaping characters in text nodes and attribute values.
 
+- 1.1.3: Performance optimization for Xpath queries. Performing multiple Xpath queries on the same element is now considerably faster.
+
 
 Example #1: Load, modify and save XML file:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

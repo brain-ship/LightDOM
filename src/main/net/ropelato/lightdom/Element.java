@@ -5,9 +5,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
 import javax.xml.namespace.QName;
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.Writer;
@@ -22,7 +20,7 @@ import java.util.logging.Logger;
  * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
  *
  * @author Sandro Ropelato
- * @version 1.1.2
+ * @version 1.1.3
  */
 public class Element implements Node
 {
@@ -37,6 +35,8 @@ public class Element implements Node
 	private final List<TextNode> textNodes = new ArrayList<TextNode>();
 	private final Map<String, List<Element>> elementsByName = new HashMap<String, List<Element>>();
 	private final Map<String, Element> elementsById = new HashMap<String, Element>();
+	private org.w3c.dom.Node w3cNodeWithIndex = null;
+	private org.w3c.dom.Node w3cNodeWithoutIndex = null;
 
 	/**
 	 * Creates a new element.
@@ -137,6 +137,30 @@ public class Element implements Node
 	 */
 	protected org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document, boolean keepIndex)
 	{
+		if(keepIndex)
+		{
+			if(w3cNodeWithIndex == null)
+				w3cNodeWithIndex = createW3CNode(document, true);
+			return w3cNodeWithIndex;
+		}
+		else
+		{
+			if(w3cNodeWithoutIndex == null)
+				w3cNodeWithoutIndex = createW3CNode(document, false);
+			return w3cNodeWithoutIndex;
+		}
+	}
+
+	/**
+	 * Creates an instance of org.w3c.dom.Node in the context of the given document.
+	 *
+	 * @param document  document in which the new node will be created
+	 * @param keepIndex {@code true} if the index attribute (lightdom specific) should be kept, {@code false} otherwise
+	 * @return instance of org.w3c.dom.Node
+	 * @since 1.1.3
+	 */
+	private org.w3c.dom.Node createW3CNode(org.w3c.dom.Document document, boolean keepIndex)
+	{
 		org.w3c.dom.Element element = document.createElement(name);
 
 		// set id (if available)
@@ -166,6 +190,17 @@ public class Element implements Node
 	}
 
 	/**
+	 * Removes the generated w3c nodes and recusively calls {@link #removeW3CNodes()} on parent element. This method should be invoken if any structural changes have been made to this element.
+	 */
+	protected void removeW3CNodes()
+	{
+		w3cNodeWithIndex = null;
+		w3cNodeWithoutIndex = null;
+		if(parent != null)
+			parent.removeW3CNodes();
+	}
+
+	/**
 	 * Adds an attribute to the element.
 	 *
 	 * @param name  name of the attribute
@@ -177,6 +212,7 @@ public class Element implements Node
 			setId(value);
 		else
 			attributes.put(name, value);
+		removeW3CNodes();
 	}
 
 	/**
@@ -638,7 +674,7 @@ public class Element implements Node
 	}
 
 	/**
-	 * Sets the parent of this element.
+	 * Sets the parent of this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node)}.
 	 *
 	 * @param parent parent of this element
 	 */
@@ -647,6 +683,7 @@ public class Element implements Node
 		this.parent = parent;
 		if(parent == null)
 			setIndex("-1");
+		parent.appendChild(this, false);
 	}
 
 	/**
@@ -681,6 +718,7 @@ public class Element implements Node
 		{
 			parent.appendChild(this);
 		}
+		removeW3CNodes();
 	}
 
 	/**
@@ -694,11 +732,23 @@ public class Element implements Node
 	}
 
 	/**
-	 * Appends a child node to this element.
+	 * Appends a child node to this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node)}.
 	 *
 	 * @param node new child node
 	 */
 	public void appendChild(Node node)
+	{
+		appendChild(node, false);
+	}
+
+	/**
+	 * Appends a child node to this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node, true)}.
+	 *
+	 * @param node            new child node
+	 * @param invokeSetParent {@code true} if this method should invoke the {@link Node#setParent(Element)} method, {@code false} otherwise
+	 * @since 1.1.3
+	 */
+	protected void appendChild(Node node, boolean invokeSetParent)
 	{
 		if(node.getParent() != null)
 		{
@@ -706,8 +756,10 @@ public class Element implements Node
 			node.getParent().removeChild(node);
 		}
 
-		node.setParent(this);
 		children.add(node);
+
+		if(invokeSetParent)
+			node.setParent(this);
 
 		if(node instanceof Element)
 		{
@@ -737,6 +789,8 @@ public class Element implements Node
 		{
 			textNodes.add((TextNode)node);
 		}
+
+		removeW3CNodes();
 	}
 
 	/**
@@ -788,6 +842,8 @@ public class Element implements Node
 		{
 			textNodes.remove(node);
 		}
+
+		removeW3CNodes();
 	}
 
 	/**
@@ -890,18 +946,24 @@ public class Element implements Node
 		return true;
 	}
 
+	/**
+	 * Performs a lookup using an Xpath query.
+	 *
+	 * @param node       instance of org.w3c.dom.Node on which the query should be executed
+	 * @param expression Xpath query to be executed
+	 * @param returnType expected return type of the query
+	 * @return result of the Xpath query.
+	 * @since 1.1.2
+	 */
 	private static Object processXPath(org.w3c.dom.Node node, String expression, QName returnType)
 	{
 		try
 		{
-			XPath xPath = XPathFactory.newInstance().newXPath();
-			XPathExpression xPathExpression = xPath.compile(expression);
-			return xPathExpression.evaluate(node, returnType);
+			return XPathFactory.newInstance().newXPath().compile(expression).evaluate(node, returnType);
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 }

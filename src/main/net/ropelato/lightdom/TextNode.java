@@ -7,7 +7,7 @@ import java.io.Writer;
  * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
  *
  * @author Sandro Ropelato
- * @version 1.1.2
+ * @version 1.1.3
  */
 public class TextNode implements Node
 {
@@ -61,13 +61,14 @@ public class TextNode implements Node
 	}
 
 	/**
-	 * Sets the parent of this element.
+	 * Sets the parent of this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node)}.
 	 *
 	 * @param parent parent of this element
 	 */
 	public void setParent(Element parent)
 	{
 		this.parent = parent;
+		parent.appendChild(this, false);
 	}
 
 	/**

@@ -7,7 +7,7 @@ import java.io.Writer;
  * This interfase defines a node in the DOM tree. A node can either be an element or a text node.
  *
  * @author Sandro Ropelato
- * @version 1.1.2
+ * @version 1.1.3
  */
 public interface Node
 {
@@ -19,7 +19,7 @@ public interface Node
 	public void setParent(Element parent);
 
 	/**
-	 * Returns the parent of this element.
+	 * Returns the parent of this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node)}.
 	 *
 	 * @return parent of this element
 	 */
