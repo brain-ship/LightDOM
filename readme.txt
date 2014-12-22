@@ -14,7 +14,7 @@ Version history
 
 - 1.0: Initial version.
 
-- 1.1: Added method to convert documents between LightDOM and the build-in DOM classes (org.w3c.dom.*).
+- 1.1: Added method to convert documents between LightDOM and the built-in DOM classes (org.w3c.dom.*).
 
 - 1.1.1: Fixed issue where text nodes or attributes would no be copied from a org.w3c.dom.Element object.
 
