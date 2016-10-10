@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="LightDOM">
+    <output-path>$PROJECT_DIR$/out/artifacts</output-path>
+    <root id="archive" name="LightDOM.jar">
+      <element id="module-output" name="LightDOM" />
+    </root>
+  </artifact>
+</component>

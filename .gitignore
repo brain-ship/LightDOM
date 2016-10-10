@@ -1,7 +1,8 @@
 .DS_Store
 Thumbs.db
 ._*
-*.iws
+.idea/workspace.xml
+.idea/tasks.xml
 TestFiles/*.out.xml
 out/production
 out/test
