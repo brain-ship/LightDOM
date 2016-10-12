@@ -6,7 +6,7 @@
 
 	<groupId>io.github.barkbeetle.lightdom</groupId>
 	<artifactId>lightdom</artifactId>
-	<version>1.1.4-SNAPSHOT</version>
+	<version>1.1.4</version>
 	<packaging>jar</packaging>
 
 	<name>LightDOM</name>
