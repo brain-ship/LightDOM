@@ -1,4 +1,4 @@
-package net.ropelato.lightdom;
+package lightdom;
 
 import org.xml.sax.*;
 import org.xml.sax.ext.Locator2;
@@ -15,17 +15,17 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
- * This class is used to generate a new DOM document. It can be created using the default constructor or loaded from a file or an InputStream. An existing document can by saved to a file or to an OutputStream.
+ * Used to generate a new DOM document. A new document can be created using the default constructor or loaded from a file or an InputStream. An existing document can be saved to a file or to an OutputStream.
  *
  * @author Sandro Ropelato
- * @version 1.1.3
+ * @version 1.1.4-SNAPSHOT
  */
 public class Document extends DefaultHandler
 {
 	private static final Charset DEFAULT_ENCODING = StandardCharsets.UTF_8;
 	private static final String DEFAULT_VERSION = "1.0";
 
-	private final Stack<Element> openElements = new Stack<Element>();
+	private final Stack<Element> openElements = new Stack<>();
 	private Element rootElement = null;
 	private TextNode openTextNode = null;
 
@@ -33,7 +33,7 @@ public class Document extends DefaultHandler
 	private String version = DEFAULT_VERSION;
 
 	/**
-	 * Creates a new Document from an InputStream.
+	 * Creates a new Document from an input stream.
 	 *
 	 * @param inputStream input stream from which the document should be loaded
 	 * @return document represented by the data form the input stream
@@ -93,8 +93,9 @@ public class Document extends DefaultHandler
 	/**
 	 * Builds document based on an instance of org.w3c.dom.Document.
 	 *
+	 * @param w3cDocument org.w3c.dom.Document to be used to create new document instance
 	 * @return document based on given org.dom.w3c.Document instance
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public static Document fromW3CDocument(org.w3c.dom.Document w3cDocument)
 	{
@@ -181,7 +182,7 @@ public class Document extends DefaultHandler
 	/**
 	 * Writes XML document to a file. This method is wrapper for the {@link #toFile(java.io.File)} method.
 	 *
-	 * @param filename
+	 * @param filename filename of file to be written
 	 */
 	public void toFile(String filename)
 	{
@@ -337,6 +338,7 @@ public class Document extends DefaultHandler
 		return value;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void setDocumentLocator(Locator locator)
 	{
@@ -347,6 +349,7 @@ public class Document extends DefaultHandler
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
 	{
@@ -362,7 +365,7 @@ public class Document extends DefaultHandler
 			parent = null;
 
 		String id = null;
-		Map<String, String> attributes = new HashMap<String, String>();
+		Map<String, String> attributes = new HashMap<>();
 		if(atts != null)
 		{
 			for(int i = 0; i < atts.getLength(); i++)
@@ -385,6 +388,7 @@ public class Document extends DefaultHandler
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void endElement(String uri, String localName, String qName)
 	{
@@ -395,6 +399,7 @@ public class Document extends DefaultHandler
 		openElements.pop();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException
 	{
@@ -412,6 +417,7 @@ public class Document extends DefaultHandler
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o)
 	{
@@ -429,6 +435,7 @@ public class Document extends DefaultHandler
 		if((version == null && document.getVersion() != null) || (version != null && !version.equals(document.getVersion())))
 			return false;
 
+		// compare root element
 		if((rootElement == null && document.getRootElement() != null) || (rootElement != null && !rootElement.equals(document.getRootElement())))
 			return false;
 

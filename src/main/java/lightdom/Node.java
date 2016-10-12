@@ -1,13 +1,13 @@
-package net.ropelato.lightdom;
+package lightdom;
 
 import java.io.IOException;
 import java.io.Writer;
 
 /**
- * This interfase defines a node in the DOM tree. A node can either be an element or a text node.
+ * Defines a node in the DOM tree. A node can either be an element or a text node.
  *
  * @author Sandro Ropelato
- * @version 1.1.3
+ * @version 1.1.4-SNAPSHOT
  */
 public interface Node
 {
@@ -16,14 +16,14 @@ public interface Node
 	 *
 	 * @param parent parent of this element
 	 */
-	public void setParent(Element parent);
+	void setParent(Element parent);
 
 	/**
 	 * Returns the parent of this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node)}.
 	 *
 	 * @return parent of this element
 	 */
-	public Element getParent();
+	Element getParent();
 
 	/**
 	 * Converts node to an instance of org.w3c.dom.Node in the context of the given document.
@@ -32,7 +32,7 @@ public interface Node
 	 * @return instance of org.w3c.dom.Node
 	 * @since 1.1.0
 	 */
-	public org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document);
+	org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document);
 
 	/**
 	 * Writes this element and all its children in XML notation.
@@ -40,7 +40,7 @@ public interface Node
 	 * @param writer  writer to which the element should be written
 	 * @param indent  number of indents (tabs)
 	 * @param newLine {@code true} if this element starts on a new line
-	 * @throws IOException if an I/O error occurs
+	 * @throws java.io.IOException if an I/O error occurs
 	 */
-	public void write(Writer writer, int indent, boolean newLine) throws IOException;
+	void write(Writer writer, int indent, boolean newLine) throws IOException;
 }

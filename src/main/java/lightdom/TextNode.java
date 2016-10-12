@@ -1,13 +1,13 @@
-package net.ropelato.lightdom;
+package lightdom;
 
 import java.io.IOException;
 import java.io.Writer;
 
 /**
- * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
+ * Represents a text node belonging to an element and containing text.
  *
  * @author Sandro Ropelato
- * @version 1.1.3
+ * @version 1.1.4-SNAPSHOT
  */
 public class TextNode implements Node
 {
@@ -37,8 +37,9 @@ public class TextNode implements Node
 	/**
 	 * Creates text node based on an instance of org.w3c.dom.Node. This will throw a RuntimeException if the given node is not an instance of org.w3c.dom.Text.
 	 *
+	 * @param  w3cNode org.w3c.dom.Node to be used to create new text node
 	 * @return text node based on given org.dom.w3c.Node instance
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public static TextNode fromW3CNode(org.w3c.dom.Node w3cNode)
 	{
@@ -49,10 +50,9 @@ public class TextNode implements Node
 	}
 
 	/**
-	 * Converts node to an instance of org.w3c.dom.Node in the context of the given document.
+	 * {@inheritDoc}
 	 *
-	 * @param document document in which the new node will be created
-	 * @return instance of org.w3c.dom.Node
+	 * Converts node to an instance of org.w3c.dom.Node in the context of the given document.
 	 * @since 1.1.0
 	 */
 	public org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document)
@@ -61,9 +61,9 @@ public class TextNode implements Node
 	}
 
 	/**
-	 * Sets the parent of this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node)}.
+	 * {@inheritDoc}
 	 *
-	 * @param parent parent of this element
+	 * Sets the parent of this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node)}.
 	 */
 	public void setParent(Element parent)
 	{
@@ -84,7 +84,7 @@ public class TextNode implements Node
 	/**
 	 * Sets text of this text node.
 	 *
-	 * @param text new text
+	 * @param text text to be set
 	 */
 	public void setText(String text)
 	{
@@ -109,7 +109,7 @@ public class TextNode implements Node
 	/**
 	 * Returns text of this text node.
 	 *
-	 * @return text of this text node.
+	 * @return text of this text node
 	 */
 	public String getText()
 	{
@@ -117,12 +117,9 @@ public class TextNode implements Node
 	}
 
 	/**
-	 * Writes this element and all its children in XML notation.
+	 * {@inheritDoc}
 	 *
-	 * @param writer  writer to which the element should be written
-	 * @param indent  number of indents (tabs)
-	 * @param newLine {@code true} if this element starts on a new line
-	 * @throws IOException if an I/O error occurs
+	 * Writes this element and all its children in XML notation.
 	 */
 	public void write(Writer writer, int indent, boolean newLine) throws IOException
 	{
@@ -145,6 +142,7 @@ public class TextNode implements Node
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o)
 	{

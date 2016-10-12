@@ -1,6 +1,5 @@
-package net.ropelato.lightdom;
+package lightdom;
 
-import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
@@ -13,28 +12,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * This class represents an element in the DOM tree. It has a name and optionally an id as well as attributes and children.
+ * Represents an element in the DOM tree. An element has a name and optionally an id as well as attributes and children.
  *
  * @author Sandro Ropelato
- * @version 1.1.3
+ * @version 1.1.4-SNAPSHOT
  */
 public class Element implements Node
 {
-	private static final Logger logger = Logger.getLogger(Element.class.getName());
 	private static final String INDEX_NAME = "lightdom-element-index";
 
 	private final String name;
 	private String id;
 	private Element parent;
-	private final Map<String, String> attributes = new HashMap<String, String>();
-	private final List<Node> children = new ArrayList<Node>();
-	private final List<TextNode> textNodes = new ArrayList<TextNode>();
-	private final Map<String, List<Element>> elementsByName = new HashMap<String, List<Element>>();
-	private final Map<String, Element> elementsById = new HashMap<String, Element>();
+	private final Map<String, String> attributes = new HashMap<>();
+	private final List<Node> children = new ArrayList<>();
+	private final List<TextNode> textNodes = new ArrayList<>();
+	private final Map<String, List<Element>> elementsByName = new HashMap<>();
+	private final Map<String, Element> elementsById = new HashMap<>();
 	private org.w3c.dom.Node w3cNodeWithIndex = null;
 	private org.w3c.dom.Node w3cNodeWithoutIndex = null;
 
@@ -78,8 +74,9 @@ public class Element implements Node
 	/**
 	 * Creates element based on an instance of org.w3c.dom.Node. This will throw a RuntimeException if the given node is not an instance of org.w3c.dom.Element.
 	 *
+	 * @param w3cNode  org.w3c.dom.Node to be used to create new element
 	 * @return element based on given org.dom.w3c.Node instance
-	 * @since 1.1
+	 * @since 1.1.0
 	 */
 	public static Element fromW3CNode(org.w3c.dom.Node w3cNode)
 	{
@@ -116,10 +113,9 @@ public class Element implements Node
 	}
 
 	/**
-	 * Converts node to an instance of org.w3c.dom.Node in the context of the given document.
+	 * {@inheritDoc}
 	 *
-	 * @param document document in which the new node will be created
-	 * @return instance of org.w3c.dom.Node
+	 * Converts node to an instance of org.w3c.dom.Node in the context of the given document.
 	 * @since 1.1.0
 	 */
 	public org.w3c.dom.Node toW3CNode(org.w3c.dom.Document document)
@@ -190,7 +186,7 @@ public class Element implements Node
 	}
 
 	/**
-	 * Removes the generated w3c nodes and recusively calls {@link #removeW3CNodes()} on parent element. This method should be invoken if any structural changes have been made to this element.
+	 * Removes the generated w3c nodes of this element and its parent elements. This method should be invoken if any structural changes have been made to this element.
 	 */
 	protected void removeW3CNodes()
 	{
@@ -292,7 +288,7 @@ public class Element implements Node
 	 */
 	public double getAttributeAsDouble(String name)
 	{
-		return new Double(getAttribute(name)).doubleValue();
+		return Double.parseDouble(getAttribute(name));
 	}
 
 	/**
@@ -303,7 +299,7 @@ public class Element implements Node
 	 */
 	public boolean getAttributeAsBoolean(String name)
 	{
-		return new Boolean(getAttribute(name)).booleanValue();
+		return Boolean.parseBoolean(getAttribute(name));
 	}
 
 	/**
@@ -400,7 +396,7 @@ public class Element implements Node
 	 */
 	public double getTextAsDouble()
 	{
-		return new Double(getText()).doubleValue();
+		return Double.parseDouble(getText());
 	}
 
 	/**
@@ -410,7 +406,7 @@ public class Element implements Node
 	 */
 	public boolean getTextAsBoolean()
 	{
-		return new Boolean(getText()).booleanValue();
+		return Boolean.parseBoolean(getText());
 	}
 
 	/**
@@ -456,10 +452,7 @@ public class Element implements Node
 	 */
 	public boolean hasElementWithName(String name)
 	{
-		if(elementsByName.containsKey(name))
-			return true;
-		else
-			return getElementByName(name) != null;
+		return elementsByName.containsKey(name) || getElementByName(name) != null;
 	}
 
 	/**
@@ -493,7 +486,7 @@ public class Element implements Node
 	public List<Element> getElementsByName(String name)
 	{
 		if(name == null)
-			return new ArrayList<Element>();
+			return new ArrayList<>();
 
 		while(name.startsWith("/"))
 			name = name.substring(1);
@@ -503,7 +496,7 @@ public class Element implements Node
 
 		if(name.length() == 0)
 		{
-			return new ArrayList<Element>();
+			return new ArrayList<>();
 		}
 		else
 		{
@@ -516,7 +509,8 @@ public class Element implements Node
 					String tagName = tagNames[i];
 					if(i == tagNames.length - 1)
 					{
-						return parentElement.getElementsByName(tagName);
+						if(parentElement != null)
+							return parentElement.getElementsByName(tagName);
 					}
 					else
 					{
@@ -526,7 +520,7 @@ public class Element implements Node
 							parentElement = parentElement.getElementByName(tagName);
 
 						if(parentElement == null)
-							return new ArrayList<Element>();
+							return new ArrayList<>();
 					}
 				}
 				return null;
@@ -535,7 +529,7 @@ public class Element implements Node
 			{
 				List<Element> result = elementsByName.get(name);
 				if(result == null)
-					return new ArrayList<Element>();
+					return new ArrayList<>();
 				else
 					return result;
 			}
@@ -569,17 +563,17 @@ public class Element implements Node
 	{
 		try
 		{
-			List<Element> elementList = new ArrayList<Element>();
+			List<Element> elementList = new ArrayList<>();
 
 			Object result = processXPath(this.toW3CNode(new Document().toW3CDocument(), true), query, XPathConstants.NODESET);
-			if(result != null && result instanceof DTMNodeList)
+			if(result != null && result instanceof NodeList)
 			{
-				DTMNodeList dtmNodeList = (DTMNodeList)result;
-				for(int i = 0; i < dtmNodeList.getLength(); i++)
+				NodeList nodeList = (NodeList)result;
+				for(int i = 0; i < nodeList.getLength(); i++)
 				{
-					if(dtmNodeList.item(i) != null && dtmNodeList.item(i) instanceof org.w3c.dom.Element)
+					if(nodeList.item(i) != null && nodeList.item(i) instanceof org.w3c.dom.Element)
 					{
-						Element element = Element.fromW3CNode(dtmNodeList.item(i));
+						Element element = Element.fromW3CNode(nodeList.item(i));
 
 						// find corresponding element relative to this by traversing the DOM tree by child index
 						String index = element.getIndex();
@@ -654,7 +648,7 @@ public class Element implements Node
 	 */
 	public List<Element> getElements()
 	{
-		List<Element> childElements = new ArrayList<Element>();
+		List<Element> childElements = new ArrayList<>();
 		for(Node child : children)
 		{
 			if(child instanceof Element)
@@ -674,16 +668,17 @@ public class Element implements Node
 	}
 
 	/**
-	 * Sets the parent of this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node)}.
+	 * {@inheritDoc}
 	 *
-	 * @param parent parent of this element
+	 * Sets the parent of this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node)}.
 	 */
 	public void setParent(Element parent)
 	{
 		this.parent = parent;
 		if(parent == null)
 			setIndex("-1");
-		parent.appendChild(this, false);
+		else
+			parent.appendChild(this, false);
 	}
 
 	/**
@@ -745,14 +740,13 @@ public class Element implements Node
 	 * Appends a child node to this element. For any Element instance {@code element} and Node instance {@code node}, {@code node.setParent(element)} has the same effect as {@code element.appendChild(node, true)}.
 	 *
 	 * @param node            new child node
-	 * @param invokeSetParent {@code true} if this method should invoke the {@link Node#setParent(Element)} method, {@code false} otherwise
+	 * @param invokeSetParent {@code true} if this method should invoke the {@link lightdom.Node#setParent(Element)} method, {@code false} otherwise
 	 * @since 1.1.3
 	 */
 	protected void appendChild(Node node, boolean invokeSetParent)
 	{
 		if(node.getParent() != null)
 		{
-			logger.log(Level.WARNING, "Child has been assigned to a different parent node and will be removed from it.");
 			node.getParent().removeChild(node);
 		}
 
@@ -768,16 +762,13 @@ public class Element implements Node
 			List<Element> elementList = elementsByName.get(element.getName());
 			if(elementList == null)
 			{
-				elementList = new ArrayList<Element>();
+				elementList = new ArrayList<>();
 				elementsByName.put(element.getName(), elementList);
 			}
 			elementList.add(element);
 
 			if(element.getId() != null)
 			{
-				if(elementsById.containsKey(element.getId()))
-					logger.log(Level.WARNING, "Duplicate element with id '" + element.getId() + "'. Old element will be replaced.");
-
 				elementsById.put(element.getId(), element);
 			}
 
@@ -847,12 +838,9 @@ public class Element implements Node
 	}
 
 	/**
-	 * Writes this element and all its children in XML notation.
+	 * {@inheritDoc}
 	 *
-	 * @param writer  writer to which the element should be written
-	 * @param indent  number of indents (tabs)
-	 * @param newLine {@code true} if this element starts on a new line
-	 * @throws IOException if an I/O error occurs
+	 * Writes this element and all its children in XML notation.
 	 */
 	public void write(Writer writer, int indent, boolean newLine) throws IOException
 	{
@@ -909,6 +897,7 @@ public class Element implements Node
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean equals(Object o)
 	{
@@ -933,15 +922,10 @@ public class Element implements Node
 
 		// compare children
 		if(children.size() != element.getChildren().size()) return false;
-		for(Node child : children)
-		{
-			boolean foundEqualChild = true;
-			for(Node otherChild : element.getChildren())
-			{
-				if(child.equals(otherChild)) foundEqualChild = true;
-			}
-			if(!foundEqualChild) return false;
-		}
+		ArrayList<Node> equalChildren = new ArrayList<>(children);
+		equalChildren.retainAll(element.getChildren());
+		if(equalChildren.size() != children.size())
+			return false;
 
 		return true;
 	}

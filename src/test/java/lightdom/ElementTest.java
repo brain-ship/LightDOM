@@ -1,4 +1,4 @@
-package net.ropelato.lightdom;
+package lightdom;
 
 import org.junit.Assert;
 import org.junit.Before;
