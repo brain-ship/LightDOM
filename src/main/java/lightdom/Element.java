@@ -17,7 +17,7 @@ import java.util.Map;
  * Represents an element in the DOM tree. An element has a name and optionally an id as well as attributes and children.
  *
  * @author Sandro Ropelato
- * @version 1.1.4
+ * @version 1.1.5-SNAPSHOT
  */
 public class Element implements Node
 {

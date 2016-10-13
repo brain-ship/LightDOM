@@ -6,7 +6,7 @@
 
 	<groupId>io.github.barkbeetle</groupId>
 	<artifactId>lightdom</artifactId>
-	<version>1.1.4</version>
+	<version>1.1.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>LightDOM</name>
@@ -118,7 +118,7 @@
 		</snapshotRepository>
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 		</repository>
 	</distributionManagement>
 

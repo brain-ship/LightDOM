@@ -7,7 +7,7 @@ import java.io.Writer;
  * Defines a node in the DOM tree. A node can either be an element or a text node.
  *
  * @author Sandro Ropelato
- * @version 1.1.4
+ * @version 1.1.5-SNAPSHOT
  */
 public interface Node
 {

@@ -7,7 +7,7 @@ import java.io.Writer;
  * Represents a text node belonging to an element and containing text.
  *
  * @author Sandro Ropelato
- * @version 1.1.4
+ * @version 1.1.5-SNAPSHOT
  */
 public class TextNode implements Node
 {
