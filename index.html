@@ -19,10 +19,25 @@
     </section>
 
     <section class="main-content">
-      <p>LightDOM is a very lightweight java-based DOM library to process XML documents. Have a look at the following examples or at the source code and the test classes to see how LightDOM works.</p>
+      <p>LightDOM is a lightweight java-based DOM library to process XML documents. Have a look at the examples or at the source code and the test classes to see how LightDOM works.</p>
+
+<h1>
+<a id="maven-dependency" class="anchor" href="#maven-dependency" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Maven dependency</h1>
+
+<p>Add the following Maven dependency to use LightDOM in your project:</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;io.github.barkbeetle&lt;/groupId&gt;
+    &lt;artifactId&gt;lightdom&lt;/artifactId&gt;
+    &lt;version&gt;1.1.4&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<h1>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h1>
 
 <h3>
-<a id="example-1-load-modify-and-save-xml-file" class="anchor" href="#example-1-load-modify-and-save-xml-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example 1: Load, modify and save XML file</h3>
+<a id="load-modify-and-save-xml-file" class="anchor" href="#load-modify-and-save-xml-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Load, modify and save XML file</h3>
 
 <pre><code>Document doc = Document.fromFile("TestFiles/books.xml");
 Element ratingElement = new Element("rating");
@@ -32,7 +47,7 @@ doc.toFile("TestFiles/books2.xml");
 </code></pre>
 
 <h3>
-<a id="example-2-create-new-document-from-scratch" class="anchor" href="#example-2-create-new-document-from-scratch" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example 2: Create new document from scratch</h3>
+<a id="create-new-document-from-scratch" class="anchor" href="#create-new-document-from-scratch" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create new document from scratch</h3>
 
 <pre><code>// create document
 
@@ -95,7 +110,7 @@ doc.toFile("TestFiles/movies.out.xml");
 </code></pre>
 
 <h3>
-<a id="example-3-find-element-with-xpath" class="anchor" href="#example-3-find-element-with-xpath" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example 3: Find element with XPath</h3>
+<a id="find-element-with-xpath" class="anchor" href="#find-element-with-xpath" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Find element with XPath</h3>
 
 <pre><code>Document doc = Document.fromFile("TestFiles/books.xml");
 Element book1Title = doc.getRootElement().getElementByQuery("book[@id = 'bk101' and price &gt; 30]/title");
