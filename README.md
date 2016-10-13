@@ -2,7 +2,7 @@ LightDOM is a lightweight java-based DOM library to process XML documents. Have 
 
 # Maven dependency
 
-Use the following Maven dependency to use LightDOM in your project:
+Add the following Maven dependency to use LightDOM in your project:
 
     <dependency>
         <groupId>io.github.barkbeetle</groupId>
