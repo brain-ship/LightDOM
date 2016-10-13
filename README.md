@@ -1,6 +1,17 @@
-LightDOM is a very lightweight java-based DOM library to process XML documents. Have a look at the following examples or at the source code and the test classes to see how LightDOM works.
+LightDOM is a lightweight java-based DOM library to process XML documents. Have a look at the examples or at the source code and the test classes to see how LightDOM works.
 
-### Example 1: Load, modify and save XML file
+# Maven dependency
+
+Use the following Maven dependency to use LightDOM in your project:
+
+    <dependency>
+        <groupId>io.github.barkbeetle</groupId>
+        <artifactId>lightdom</artifactId>
+        <version>1.1.4</version>
+    </dependency>
+
+# Examples
+### Load, modify and save XML file
 
     Document doc = Document.fromFile("TestFiles/books.xml");
     Element ratingElement = new Element("rating");
@@ -8,7 +19,7 @@ LightDOM is a very lightweight java-based DOM library to process XML documents. 
     doc.getRootElement().getElementById("bk103").appendChild(ratingElement);
     doc.toFile("TestFiles/books2.xml");
 
-### Example 2: Create new document from scratch
+### Create new document from scratch
 
     // create document
     
@@ -69,7 +80,7 @@ LightDOM is a very lightweight java-based DOM library to process XML documents. 
     
     doc.toFile("TestFiles/movies.out.xml");
 
-### Example 3: Find element with XPath
+### Find element with XPath
 
     Document doc = Document.fromFile("TestFiles/books.xml");
     Element book1Title = doc.getRootElement().getElementByQuery("book[@id = 'bk101' and price > 30]/title");
