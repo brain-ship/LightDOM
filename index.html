@@ -22,18 +22,6 @@
       <p>LightDOM is a lightweight java-based DOM library to process XML documents. Have a look at the examples or at the source code and the test classes to see how LightDOM works.</p>
 
 <h1>
-<a id="maven-dependency" class="anchor" href="#maven-dependency" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Maven dependency</h1>
-
-<p>Add the following Maven dependency to use LightDOM in your project:</p>
-
-<pre><code>&lt;dependency&gt;
-    &lt;groupId&gt;io.github.barkbeetle&lt;/groupId&gt;
-    &lt;artifactId&gt;lightdom&lt;/artifactId&gt;
-    &lt;version&gt;1.1.4&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
-
-<h1>
 <a id="examples" class="anchor" href="#examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Examples</h1>
 
 <h3>
@@ -115,6 +103,18 @@ doc.toFile("TestFiles/movies.out.xml");
 <pre><code>Document doc = Document.fromFile("TestFiles/books.xml");
 Element book1Title = doc.getRootElement().getElementByQuery("book[@id = 'bk101' and price &gt; 30]/title");
 Element book2Author = doc.getRootElement().getElementByQuery("book[contains(description, 'battle one another')]/author");
+</code></pre>
+
+<h1>
+<a id="maven-dependency" class="anchor" href="#maven-dependency" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Maven dependency</h1>
+
+<p>Add the following Maven dependency to use LightDOM in your project:</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;io.github.barkbeetle&lt;/groupId&gt;
+    &lt;artifactId&gt;lightdom&lt;/artifactId&gt;
+    &lt;version&gt;1.1.4&lt;/version&gt;
+&lt;/dependency&gt;
 </code></pre>
 
       <footer class="site-footer">
