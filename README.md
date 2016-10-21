@@ -1,15 +1,5 @@
 LightDOM is a lightweight java-based DOM library to process XML documents. Have a look at the examples or at the source code and the test classes to see how LightDOM works.
 
-# Maven dependency
-
-Add the following Maven dependency to use LightDOM in your project:
-
-    <dependency>
-        <groupId>io.github.barkbeetle</groupId>
-        <artifactId>lightdom</artifactId>
-        <version>1.1.4</version>
-    </dependency>
-
 # Examples
 ### Load, modify and save XML file
 
@@ -85,4 +75,14 @@ Add the following Maven dependency to use LightDOM in your project:
     Document doc = Document.fromFile("TestFiles/books.xml");
     Element book1Title = doc.getRootElement().getElementByQuery("book[@id = 'bk101' and price > 30]/title");
     Element book2Author = doc.getRootElement().getElementByQuery("book[contains(description, 'battle one another')]/author");
+
+# Maven dependency
+
+Add the following Maven dependency to use LightDOM in your project:
+
+    <dependency>
+        <groupId>io.github.barkbeetle</groupId>
+        <artifactId>lightdom</artifactId>
+        <version>1.1.4</version>
+    </dependency>
 
