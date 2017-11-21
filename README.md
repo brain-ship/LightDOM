@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sropelato/LightDOM.svg?branch=master)](https://travis-ci.org/sropelato/LightDOM)
+
 LightDOM is a lightweight java-based DOM library to process XML documents. Have a look at the examples or at the source code and the test classes to see how LightDOM works.
 
 # Examples
