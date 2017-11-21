@@ -1,0 +1,8 @@
+title: LightDOM
+description: Lightweight java-based DOM library to process XML documents
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
